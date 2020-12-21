@@ -107,6 +107,7 @@ public:
                 shape.setPosition(x, y += -STEP);
                 selected = false;
                 setComputerTurn(true);
+
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && y < WINDOW_H - STEP)
@@ -149,6 +150,11 @@ public:
         if (isSelected())
         {
             makeStep();
+
+        }
+        else
+        {
+
         }
     }
 
@@ -169,7 +175,11 @@ public:
         shape.setFillColor(sf::Color(178, 236, 93));
     }
 
-
+    void move() 
+    { 
+        cout << "AI moved" << endl; 
+        Pawn::setComputerTurn(false);
+    }
 
 };
 
@@ -196,8 +206,20 @@ int main()
                 window.close();
         }
 
-        p.select(event, cursor.x, cursor.y);
-        p.move();
+        if (!Pawn::isComputerTurn())
+        {
+            p.select(event, cursor.x, cursor.y);
+            if (p.isSelected())
+            {
+                p.move();
+
+            }
+
+        }
+        else
+        {
+            ai.move();
+        }
 
         window.clear();
 
