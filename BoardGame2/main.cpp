@@ -46,11 +46,15 @@ public:
 
 };
 
+
+
 class Pawn
 {
 private:
     int x, y;
     bool selected;
+    static bool computerTurn;
+
 public:
     CircleShape shape;
 
@@ -64,19 +68,9 @@ public:
 
         selected = false;
     }
+    static void setComputerTurn(bool state) { computerTurn = state; }
+    static bool isComputerTurn() { return computerTurn; }
 
-    bool isSelected() { return selected; }
-    bool canMove(Vector2f newPosition)
-    {
-        if (newPosition == Vector2f(350,250)) // TODO check real pawn
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
     void select(Event event, int cursorX, int cursorY)
     {
         if (event.key.code == sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -91,6 +85,18 @@ public:
                 shape.setFillColor(sf::Color(70, 130, 180));
             }
     }
+    bool isSelected() { return selected; }
+    bool canMove(Vector2f newPosition)
+    {
+        if (newPosition == Vector2f(350,250)) // TODO check real pawn
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     void makeStep()
     {
         if (Keyboard::isKeyPressed(Keyboard::W) && y > 0)
@@ -100,7 +106,7 @@ public:
             {
                 shape.setPosition(x, y += -STEP);
                 selected = false;
-
+                setComputerTurn(true);
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && y < WINDOW_H - STEP)
@@ -145,16 +151,28 @@ public:
             makeStep();
         }
     }
+
+
+
 };
+
+bool Pawn::computerTurn = false;
+
 
 class AI : public Pawn
 {
+private:
+
 public:
     AI(int x, int y) : Pawn(x, y)
     {
         shape.setFillColor(sf::Color(178, 236, 93));
     }
+
+
+
 };
+
 
 
 int main()
@@ -182,6 +200,8 @@ int main()
         p.move();
 
         window.clear();
+
+        cout << Pawn::isComputerTurn() << endl;
 
         board.drawBoard(window);
 
