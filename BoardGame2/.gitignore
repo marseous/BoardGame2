@@ -1,0 +1,7 @@
+x64/
+GLFW/
+
+.vs/
+
+*.vcxproj*
+*.sln
