@@ -206,7 +206,6 @@ public:
 
         if (Pawn::isComputerTurn())
         {
-            Vector2f finalPosition(350, 350);
 
             Vector2f right(x + STEP, y);
             Vector2f down(x, y + STEP);
@@ -333,8 +332,6 @@ int main()
 
 
     Board board;
-    Pawn p(350, 350);
-    Pawn p2(200, 200);
 
     vector<AI*> ai
     {
@@ -347,6 +344,19 @@ int main()
         new AI(200,100),
         new AI(200,150),
         new AI(200,200)
+    };
+
+    vector<Pawn*> player
+    {
+        new Pawn(250,250),
+        new Pawn(250,300),
+        new Pawn(250,350),
+        new Pawn(300,250),
+        new Pawn(300,300),
+        new Pawn(300,350),
+        new Pawn(350,250),
+        new Pawn(350,300),
+        new Pawn(350,350)
     };
 
     
@@ -373,10 +383,15 @@ int main()
         }
         else
         {
-            p.select(event, cursor.x, cursor.y);
-            if (p.isSelected())
+            for (auto& p : player)
             {
-                p.move();
+                p->select(event, cursor.x, cursor.y);
+                if (p->isSelected())
+                {
+                    p->move();
+
+                }
+
 
             }
 
@@ -388,12 +403,14 @@ int main()
 
         board.drawBoard(window);
 
-        window.draw(p.shape);
-        window.draw(p2.shape);
 
         for (auto& i : ai)
         {
             window.draw(i->shape);
+        }
+        for (auto& p : player)
+        {
+            window.draw(p->shape);
         }
 
 
