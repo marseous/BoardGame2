@@ -91,23 +91,24 @@ public:
             }
     }
     bool isSelected() { return selected; }
-    bool canMove(Vector2f newPosition)
+    bool canMove(Vector2f newPosition, vector<Pawn*> player)
     {
-        if (newPosition == Vector2f(200, 200)) // TODO check real pawn
+        for (int i = 0; i < player.size(); ++i)
         {
-            return false;
-        }
-        else
-        {
-            return true;
+            //if (newPosition == Vector2f(200, 200)) // TODO check real pawn
+            if (newPosition == player[i]->shape.getPosition()) 
+            {
+                return false;
+            }
+
         }
     }
-    void makeStep()
+    void makeStep(vector<Pawn*> player)
     {
         if (Keyboard::isKeyPressed(Keyboard::W) && y > 0)
         {
             Vector2f newPosition(x, y - STEP);
-            if (canMove(newPosition))
+            if (canMove(newPosition, player))
             {
                 shape.setPosition(x, y += -STEP);
                 selected = false;
@@ -118,7 +119,7 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && y < WINDOW_H - STEP)
         {
             sf::Vector2f newPosition(x, y + STEP);
-            if (canMove(newPosition))
+            if (canMove(newPosition, player))
             {
                 shape.setPosition(x, y += STEP);
                 selected = false;
@@ -130,7 +131,7 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && x > 0)
         {
             sf::Vector2f newPosition(x - STEP, y);
-            if (canMove(newPosition))
+            if (canMove(newPosition, player))
             {
                 shape.setPosition(x += -STEP, y);
                 selected = false;
@@ -142,7 +143,7 @@ public:
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && x < WINDOW_W - STEP)
         {
             sf::Vector2f newPosition(x + STEP, y);
-            if (canMove(newPosition))
+            if (canMove(newPosition, player))
             {
                 shape.setPosition(x += STEP, y);
                 selected = false;
@@ -153,11 +154,11 @@ public:
         }
 
     }
-    void move()
+    void move(vector<Pawn*> player)
     {
         if (isSelected())
         {
-            makeStep();
+            makeStep(player);
 
         }
         else
@@ -372,30 +373,30 @@ int main()
                 window.close();
         }
 
-        if (Pawn::isComputerTurn())
-        {
-            int i = rand() % ai.size();
 
-            ai[i]->move(ai);
-               
-            
-           
-        }
-        else
-        {
+     
             for (auto& p : player)
             {
+                if (Pawn::isComputerTurn())
+                {
+                    int i = rand() % ai.size();
+
+                    ai[i]->move(ai);
+
+
+
+                }
                 p->select(event, cursor.x, cursor.y);
                 if (p->isSelected())
-                {
-                    p->move();
+                { 
+                    p->move(player);
 
                 }
 
 
             }
 
-        }
+        
 
         window.clear();
 
