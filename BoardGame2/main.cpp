@@ -7,6 +7,7 @@
 #define WINDOW_H 400
 #define STEP WINDOW_W / BOARD_W
 
+
 using namespace sf;
 using namespace std;
 
@@ -73,8 +74,7 @@ public:
     static void setComputerTurn(bool state) { computerTurn = state; }
     static bool isComputerTurn() { return computerTurn; }
 
-    int getX() { return x; }
-    int getY() { return y; }
+    bool isSelected() { return selected; }
 
     void select(Event event, int cursorX, int cursorY)
     {
@@ -90,19 +90,14 @@ public:
                 shape.setFillColor(sf::Color(70, 130, 180));
             }
     }
-    bool isSelected() { return selected; }
+
     bool canMove(Vector2f newPosition, vector<Pawn*> player)
     {
         for (int i = 0; i < player.size(); ++i)
-        {
-            //if (newPosition == Vector2f(200, 200)) // TODO check real pawn
-            if (newPosition == player[i]->shape.getPosition()) 
-            {
-                return false;
-            }
-
-        }
+                if (newPosition == player[i]->shape.getPosition())
+                    return false;
     }
+
     void makeStep(vector<Pawn*> player)
     {
         if (Keyboard::isKeyPressed(Keyboard::W) && y > 0)
@@ -157,51 +152,29 @@ public:
     void move(vector<Pawn*> player)
     {
         if (isSelected())
-        {
             makeStep(player);
-
-        }
-        else
-        {
-
-        }
     }
-
-
-
 };
-
 bool Pawn::computerTurn = false;
+
 
 
 class AI : public Pawn
 {
-private:
-
 public:
     AI(int x, int y) : Pawn(x, y)
     {
         shape.setFillColor(sf::Color(178, 236, 93));
     }
 
-
-
-    void select() {};
-    bool canMove(Vector2f newPosition, vector<AI*> ai)
+    bool canMove(Vector2f newPosition, vector<Pawn*> ai)
     {
         for (int i = 0; i < ai.size(); i++)
-        {
             if (newPosition == ai[i]->shape.getPosition())
-            {
-                cout << "New" << newPosition.x << " " << newPosition.y << endl;
-                cout << ai[i]->shape.getPosition().x << " " << ai[i]->shape.getPosition().x << endl;
                 return false;
-                
-            }
-        }
     }
 
-    void move(vector<AI*> ai) //TODO
+    void move(vector<Pawn*> ai) //TODO
     { 
         srand(time(NULL));
 
@@ -322,32 +295,30 @@ public:
             }
         }
     }
-
 };
 
 
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_W, WINDOW_H), "Game");
-
-
+    RenderWindow window(VideoMode(WINDOW_W, WINDOW_H), "Game");
     Board board;
 
-    vector<AI*> ai
+
+    vector<AI*> ai // start position
     {
-        new AI(100,100),
-        new AI(100,150),
-        new AI(100,200),
-        new AI(150,100),
-        new AI(150,150),
-        new AI(150,200),
-        new AI(200,100),
-        new AI(200,150),
-        new AI(200,200)
+        new AI(0,0),
+        new AI(0,50),
+        new AI(0,100),
+        new AI(50,00),
+        new AI(50,50),
+        new AI(50,100),
+        new AI(100,0),
+        new AI(100,50),
+        new AI(100,100)
     };
 
-    vector<Pawn*> player
+    vector<Pawn*> player // start position
     {
         new Pawn(250,250),
         new Pawn(250,300),
@@ -360,6 +331,8 @@ int main()
         new Pawn(350,350)
     };
 
+    player.insert(player.end(), ai.begin(), ai.end());
+
     
     while (window.isOpen())
     {
@@ -369,44 +342,33 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
                 window.close();
         }
 
 
      
-            for (auto& p : player)
+        for (auto& p : player)
+        {
+            if (Pawn::isComputerTurn())
             {
-                if (Pawn::isComputerTurn())
-                {
-                    int i = rand() % ai.size();
-
-                    ai[i]->move(ai);
-
-
-
-                }
-                p->select(event, cursor.x, cursor.y);
-                if (p->isSelected())
-                { 
-                    p->move(player);
-
-                }
-
-
+                int i = rand() % ai.size();
+                ai[i]->move(player);
             }
-
-        
+            p->select(event, cursor.x, cursor.y);
+            if (p->isSelected())
+            { 
+                p->move(player);
+            }
+        }
 
         window.clear();
-
-        //cout << Pawn::isComputerTurn() << endl;
-
+        
         board.drawBoard(window);
-
 
         for (auto& i : ai)
         {
+            i->shape.setFillColor(sf::Color(178, 236, 93));
             window.draw(i->shape);
         }
         for (auto& p : player)
