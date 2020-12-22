@@ -108,7 +108,6 @@ public:
                 shape.setPosition(x, y += -STEP);
                 selected = false;
                 setComputerTurn(true);
-
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && y < WINDOW_H - STEP)
@@ -131,9 +130,7 @@ public:
                 shape.setPosition(x += -STEP, y);
                 selected = false;
                 setComputerTurn(true);
-
             }
-
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && x < WINDOW_W - STEP)
         {
@@ -143,18 +140,17 @@ public:
                 shape.setPosition(x += STEP, y);
                 selected = false;
                 setComputerTurn(true);
-
             }
-
         }
-
     }
+
     void move(vector<Pawn*> player)
     {
         if (isSelected())
             makeStep(player);
     }
 };
+
 bool Pawn::computerTurn = false;
 
 
@@ -304,7 +300,6 @@ int main()
     RenderWindow window(VideoMode(WINDOW_W, WINDOW_H), "Game");
     Board board;
 
-
     vector<AI*> ai // start position
     {
         new AI(0,0),
@@ -355,10 +350,13 @@ int main()
                 int i = rand() % ai.size();
                 ai[i]->move(player);
             }
-            p->select(event, cursor.x, cursor.y);
-            if (p->isSelected())
-            { 
-                p->move(player);
+            else
+            {
+                p->select(event, cursor.x, cursor.y);
+                if (p->isSelected())
+                {
+                    p->move(player);
+                }
             }
         }
 
