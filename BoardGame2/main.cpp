@@ -200,7 +200,7 @@ public:
         }
     }
 
-    void move(vector<AI*> ai) 
+    void move(vector<AI*> ai) //TODO
     { 
         srand(time(NULL));
 
@@ -210,6 +210,8 @@ public:
 
             Vector2f right(x + STEP, y);
             Vector2f down(x, y + STEP);
+           // Vector2f left(x - STEP, y);
+           // Vector2f up(x, y - STEP);
 
 
             if (shape.getPosition().x < 350 || shape.getPosition().y < 350)
@@ -245,6 +247,79 @@ public:
                     }
                 }
             }
+            else if (shape.getPosition().x < 300 || shape.getPosition().y < 300)
+            {
+                int j = rand() % 2;
+                if (j == 0)
+                {
+                    if (canMove(right, ai) && x < 300)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(down, ai) && y < 300)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
+                if (j == 1)
+                {
+                    if (canMove(down, ai) && y < 300)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(right, ai) && x < 300)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
+            }
+            else if (shape.getPosition().x < 250 || shape.getPosition().y < 250)
+            {
+                int j = rand() % 2;
+                if (j == 0)
+                {
+                    if (canMove(right, ai) && x < 250)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(down, ai) && y < 250)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
+                if (j == 1)
+                {
+                    if (canMove(down, ai) && y < 250)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(right, ai) && x < 250)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
+            }
+            else 
+            {
+                if (x >= 300 && y <= 250)
+                {
+                    shape.setPosition(x -= STEP, y);
+                    Pawn::setComputerTurn(false);
+                }
+                if (x <= 250 && y >= 300)
+                {
+                    shape.setPosition(x, y -= STEP);
+                    Pawn::setComputerTurn(false);
+                }
+            }
         }
     }
 
@@ -261,12 +336,17 @@ int main()
     Pawn p(350, 350);
     Pawn p2(200, 200);
 
-    //AI ai(200, 0);
     vector<AI*> ai
     {
         new AI(100,100),
         new AI(100,150),
-        new AI(150,100)
+        new AI(100,200),
+        new AI(150,100),
+        new AI(150,150),
+        new AI(150,200),
+        new AI(200,100),
+        new AI(200,150),
+        new AI(200,200)
     };
 
     
@@ -284,7 +364,7 @@ int main()
 
         if (Pawn::isComputerTurn())
         {
-            int i = rand() % 3;
+            int i = rand() % ai.size();
 
             ai[i]->move(ai);
                
