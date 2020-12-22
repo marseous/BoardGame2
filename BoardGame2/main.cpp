@@ -186,31 +186,66 @@ public:
 
 
     void select() {};
-    void canMove()
+    bool canMove(Vector2f newPosition, vector<AI*> ai)
     {
-
+        for (int i = 0; i < ai.size(); i++)
+        {
+            if (newPosition == ai[i]->shape.getPosition())
+            {
+                cout << "New" << newPosition.x << " " << newPosition.y << endl;
+                cout << ai[i]->shape.getPosition().x << " " << ai[i]->shape.getPosition().x << endl;
+                return false;
+                
+            }
+        }
     }
 
     void move(vector<AI*> ai) 
     { 
+        srand(time(NULL));
+
         if (Pawn::isComputerTurn())
         {
-
-
-
-
             Vector2f finalPosition(350, 350);
-            int i = rand() % 2;
-            while (ai[i]->x < 350 && ai[i]->y < 350)
+
+            Vector2f right(x + STEP, y);
+            Vector2f down(x, y + STEP);
+
+
+            if (shape.getPosition().x < 350 || shape.getPosition().y < 350)
             {
                 cout << "AI moved" << endl;
-                shape.setPosition(x, y += STEP);
-                Pawn::setComputerTurn(false);
+                //cout << i << endl;
 
-                break;
+                int j = rand() % 2;
+                if (j == 0)
+                {
+                    if (canMove(right, ai) && x < 350)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(down, ai) && y < 350)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
+                if (j == 1)
+                {
+                    if (canMove(down, ai) && y < 350)
+                    {
+                        shape.setPosition(x, y += STEP);
+                        Pawn::setComputerTurn(false);
+                    }
+                    else if (canMove(right, ai) && x < 350)
+                    {
+                        shape.setPosition(x += STEP, y);
+                        Pawn::setComputerTurn(false);
+                    }
+                }
             }
         }
-
     }
 
 };
@@ -221,7 +256,6 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_W, WINDOW_H), "Game");
 
-    srand(time(NULL));
 
     Board board;
     Pawn p(350, 350);
@@ -231,7 +265,8 @@ int main()
     vector<AI*> ai
     {
         new AI(100,100),
-        new AI(100,150)
+        new AI(100,150),
+        new AI(150,100)
     };
 
     
@@ -249,13 +284,11 @@ int main()
 
         if (Pawn::isComputerTurn())
         {
-            while (Pawn::isComputerTurn())
-            {
-                for (auto& i : ai)
-                {
-                    i->move(ai);
-                }
-            }
+            int i = rand() % 3;
+
+            ai[i]->move(ai);
+               
+            
            
         }
         else
