@@ -1,0 +1,2 @@
+D:\Programming Learn\BoardGame2\BoardGame2\x64\Debug\BoardGame2.exe
+D:\Programming Learn\BoardGame2\BoardGame2\x64\Debug\BoardGame2.pdb
